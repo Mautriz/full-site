@@ -15,10 +15,6 @@ async-graphql-warp = "2.9.8"
 # Database, connection pooling and tokio-postgres adapter
 sqlx = { version = "0.5.5", features = ["macros", "migrate", "runtime-tokio-rustls", "postgres", "all-types"]}
 
-# Authentication + jwt parsing
-# oauth2 = "4.1.0"
-jsonwebtoken = "7.2.0"
-
 # Http client
 reqwest = "0.11.4"
 

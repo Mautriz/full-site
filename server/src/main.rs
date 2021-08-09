@@ -32,7 +32,7 @@ async fn main() {
 
     //
 
-    migrate!("./migrations").run(&pool).await.unwrap();
+    migrate!("migrations").run(&pool).await.unwrap();
 
     sqlx::query(r"insert into users(username) values ('ao'),('frate')")
         .execute(&pool)
@@ -79,9 +79,6 @@ async fn main() {
                 GraphQLPlaygroundConfig::new("/graphql").subscription_endpoint("/subscription"),
             ))
     });
-
-    let facebook_login =
-        warp::path!("oauth" / "facebook").and_then(|| async { Ok::<_, Infallible>("ciao") });
 
     warp::serve(graphql_post.or(graphql_ws).or(playground))
         .run(([0, 0, 0, 0], 8001))
