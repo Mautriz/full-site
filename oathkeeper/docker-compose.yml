@@ -1,0 +1,17 @@
+version: "3"
+
+services: 
+    oathkeeper:
+        image: oryd/oathkeeper:v0.38
+        depends_on:
+            - kratos
+        ports:
+            - 4455:4455
+            - 4456:4456
+        command:
+            serve proxy -c "/etc/config/oathkeeper/oathkeeper.yml"
+        environment:
+            - LOG_LEVEL=debug
+        restart: on-failure
+        volumes:
+            - .:/etc/config/oathkeeper
