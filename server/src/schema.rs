@@ -3,7 +3,6 @@ use async_graphql::{
     SchemaBuilder, Subscription,
 };
 use std::time::Duration;
-use tokio::sync::broadcast;
 use tokio_stream::{wrappers::BroadcastStream, Stream};
 
 use crate::{context::MyContext, domain::user::UserMessage};
@@ -44,9 +43,7 @@ impl UserSubscription {
             });
         }
 
-        let rx_stream = BroadcastStream::new(tx.subscribe()).filter_map(|x| async move { x.ok() });
-
-        rx_stream
+        MyContext::stream_from(&tx)
     }
 }
 

@@ -32,7 +32,7 @@ async fn main() {
 
     //
 
-    migrate!("migrations").run(&pool).await.unwrap();
+    migrate!("./migrations").run(&pool).await.unwrap();
 
     sqlx::query(r"insert into users(username) values ('ao'),('frate')")
         .execute(&pool)
@@ -56,10 +56,10 @@ async fn main() {
         ));
     let graphql_ws = warp::path!("subscription").and(
         async_graphql_warp::graphql_subscription_with_data(schema, |value| async {
-            println!("{:?}", value);
+            println!("{:?} ao", value);
             #[derive(serde::Deserialize)]
             struct Payload {
-                token: String,
+                token: Option<String>,
             }
 
             if let Ok(_payload) = serde_json::from_value::<Payload>(value) {
