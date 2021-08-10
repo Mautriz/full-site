@@ -1,22 +1,23 @@
 <script lang="ts" context="module">
-	import { getAssetAsString } from '$lib/ts/assets';
+	import { getBlogPost } from '$lib/ts/assets';
 	import type { Load } from '@sveltejs/kit';
-	export const load: Load = (ao) => {
-		console.log(ao);
-		// getAssetAsString()
-
+	import marked from 'marked'
+	export const prerender = true
+	export const load: Load = async ({ fetch, page }) => {
+		const { slug } = page.params;
+		let post = marked(await getBlogPost(slug + '.md', fetch));
 		return {
 			props: {
-				ao
+				post
 			}
 		};
 	};
 </script>
 
 <script lang="ts">
-	export let ao: any;
+	export let post: string;
 </script>
 
 <div>
-	{JSON.stringify(ao)}
+	{@html post}
 </div>
