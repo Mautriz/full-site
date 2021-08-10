@@ -1,0 +1,1 @@
+docker-compose --profile auth up -d

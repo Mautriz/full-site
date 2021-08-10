@@ -76,12 +76,10 @@ mutators:
   noop:
     enabled: true
 
-  id_token:
+  header:
     enabled: true
     config:
-      issuer_url: http://127.0.0.1:4455/
-      jwks_url: file:///etc/config/oathkeeper/id_token.jwks.json
-      claims: |
-        {
-          "session": {{ .Extra | toJson }}
-        }
+      headers:
+        X-User: '{{ print .Subject }}'
+
+      

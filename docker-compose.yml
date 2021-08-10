@@ -11,17 +11,19 @@ services:
       - POSTGRES_DB=kratos
     volumes:
       - pg13:/var/lib/postgresql/data
+    profiles: ["auth"]
 
   kratos-migrate:
     image: oryd/kratos:v0.7.1-alpha.1
     command: -c /etc/config/kratos/kratos.yml migrate sql -e --yes
     restart: on-failure
     env_file:
-      - .env
+      - ./kratos/.env
     volumes:
-      - .:/etc/config/kratos
+      - ./kratos:/etc/config/kratos
     depends_on:
       - postgresd
+    profiles: ["auth"]
 
   kratos:
     image: oryd/kratos:v0.7.1-alpha.1
@@ -32,10 +34,24 @@ services:
       - "4434:4434" # admin
     command: serve -c /etc/config/kratos/kratos.yml --dev
     env_file:
-      - .env
+      - ./kratos/.env
     volumes:
-      - .:/etc/config/kratos
+      - ./kratos:/etc/config/kratos
     restart: unless-stopped
+    profiles: ["auth"]
+
+  oathkeeper:
+    image: oryd/oathkeeper:v0.38
+    ports:
+      - 4455:4455
+      - 4456:4456
+    command: serve proxy -c "/etc/config/oathkeeper/oathkeeper.yml"
+    environment:
+      - LOG_LEVEL=debug
+    restart: on-failure
+    volumes:
+      - ./oathkeeper:/etc/config/oathkeeper
+    profiles: ["auth"]
 
 volumes:
   pg13:

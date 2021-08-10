@@ -18,39 +18,58 @@
     - handler: allow
   mutators:
     - handler: noop
-
+    
 -
-  id: "ory:kratos-selfservice-ui-node:anonymous"
+  id: "server:gql"
   upstream:
     preserve_host: true
-    url: "http://kratos-selfservice-ui-node:4435"
+    url: "http://localhost:8001"
+    strip_path: /api
   match:
-    url: "http://127.0.0.1:4455/<{error,recovery,verify,auth/*,**.css,**.js}{/,}>"
+    url: "http://127.0.0.1:4455/api/<**>"
     methods:
       - GET
+      - POST
   authenticators:
+    - handler: cookie_session
     - handler: anonymous
   authorizer:
     - handler: allow
   mutators:
-    - handler: noop
+    - handler: header
 
--
-  id: "ory:kratos-selfservice-ui-node:protected"
-  upstream:
-    preserve_host: true
-    url: "http://kratos-selfservice-ui-node:4435"
-  match:
-    url: "http://127.0.0.1:4455/<{,debug,dashboard,settings}>"
-    methods:
-      - GET
-  authenticators:
-    - handler: cookie_session
-  authorizer:
-    - handler: allow
-  mutators:
-    - handler: id_token
-  errors:
-    - handler: redirect
-      config:
-        to: http://127.0.0.1:4455/auth/login
+# -
+#   id: "ory:kratos-selfservice-ui-node:anonymous"
+#   upstream:
+#     preserve_host: true
+#     url: "http://kratos-selfservice-ui-node:4435"
+#   match:
+#     url: "http://127.0.0.1:4455/<{error,recovery,verify,auth/*,**.css,**.js}{/,}>"
+#     methods:
+#       - GET
+#   authenticators:
+#     - handler: anonymous
+#   authorizer:
+#     - handler: allow
+#   mutators:
+#     - handler: noop
+
+# -
+#   id: "ory:kratos-selfservice-ui-node:protected"
+#   upstream:
+#     preserve_host: true
+#     url: "http://kratos-selfservice-ui-node:4435"
+#   match:
+#     url: "http://127.0.0.1:4455/<{,debug,dashboard,settings}>"
+#     methods:
+#       - GET
+#   authenticators:
+#     - handler: cookie_session
+#   authorizer:
+#     - handler: allow
+#   mutators:
+#     - handler: id_token
+#   errors:
+#     - handler: redirect
+#       config:
+#         to: http://127.0.0.1:4455/auth/login
